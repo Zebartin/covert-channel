@@ -7,7 +7,21 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-const char* buf = "hi";
+const char* buf = "abc";
+
+void create_processes(char ch)
+{
+    pid_t s_pid[256];
+    for (int i = 1; i < ch; i++) {
+        if ((s_pid[i] = fork()) == 0) {
+            sleep(1);
+            exit(0);
+        } else if (s_pid[i] < 0) {
+            perror("error!");
+        }
+    }
+    printf("%d proccesses are created!\n", ch);
+}
 
 int main()
 {
@@ -24,6 +38,7 @@ int main()
     ch = buf[idx++];
     while (ch != '\0') {
         printf("SENDING %c\n", ch);
+        create_processes(ch);
         ch = buf[idx++];
         // 告知数据已发送
         my_touch(FILE_B_PATH);

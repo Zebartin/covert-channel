@@ -5,3 +5,4 @@ run : receiver.c sender.c test.c
 
 clean:
 	rm receiver sender test
+	rm A B C
