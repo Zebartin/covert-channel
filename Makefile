@@ -1,8 +1,7 @@
-run : receiver.c sender.c test.c
+run : receiver.c sender.c
 	gcc receiver.c -o receiver
 	gcc sender.c -o sender
-	gcc test.c  -o test
 
 clean:
-	rm receiver sender test
+	rm receiver sender
 	rm A B C
