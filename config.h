@@ -9,8 +9,8 @@
 #include <unistd.h>
 #include <utime.h>
 
-const char* FILE_INPUT_PATH = "./os_course_input_file";
-const char* FILE_OUTPUT_PATH = "./os_course_output_file";
+const char* FILE_INPUT_PATH = "./in_text";
+const char* FILE_OUTPUT_PATH = "./out_text";
 const char* FILE_A_PATH = "./A";
 const char* FILE_B_PATH = "./B";
 const char* FILE_C_PATH = "./C";

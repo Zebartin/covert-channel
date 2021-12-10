@@ -1,11 +1,4 @@
 #include "config.h"
-#include <fcntl.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 #include <sys/msg.h>
 
 #define N 256
@@ -15,7 +8,7 @@ const char *buf = "abc";
 
 void sendChar(char c)
 {
-    int i, t, j;
+    int i, j, t;
     for (i = 0;i<8;i++){
         t = c&1;
         if (t){
@@ -43,7 +36,6 @@ void sendChar(char c)
 int main()
 {
     // 等待第一次握手以建立通信
-    loop_until_exists(FILE_A_PATH);
     loop_until_exists(FILE_B_PATH);
     loop_until_exists(FILE_C_PATH);
 
@@ -57,7 +49,7 @@ int main()
     {
         tmp = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
         if (tmp == -1){
-            printf("Have reached message queue limit [%d]", mq_num);
+            printf("Have reached message queue limit [%d]\n", mq_num);
             break;
         }
         if (mq_num == N)
@@ -74,19 +66,18 @@ int main()
     for (i=0; i<mq_num;i++)
         printf("%d,", msgids[i]);
     printf("\n");
-    ch = buf[idx++];
-    while (ch != '\0')
+
+    int fd = open(FILE_INPUT_PATH, O_RDONLY);
+    while (read(fd, &ch, 1))
     {
         printf("SENDING %c\n", ch);
         sendChar(ch);
-        ch = buf[idx++];
     }
+    sendChar(0);
     for (i=0; i<mq_num;i++)
         msgctl(msgids[i],IPC_RMID,NULL);
 
     printf("FINISH SENDING\n");
 
-    // 结束握手
-    my_touch(FILE_A_PATH);
     return 0;
 }
