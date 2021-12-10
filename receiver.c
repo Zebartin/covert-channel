@@ -17,13 +17,10 @@ int main()
         perror("error!");
         return -1;
     }
-    // first_pid += 1; // 修正
+    // first_pid += 1; // 修正 // ???,为什么其实不需要?
 
     // 初始化通信环境,与 sender 第一次握手
     int fd_A = open(FILE_A_PATH, O_CREAT, 0777);
-    struct stat s;
-    stat(FILE_A_PATH, &s);
-    int64_t last_time = s.st_atime;
     int fd_B = open(FILE_B_PATH, O_CREAT, 0777);
     int fd_C = open(FILE_C_PATH, O_CREAT, 0777);
 
