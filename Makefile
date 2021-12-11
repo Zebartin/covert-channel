@@ -13,3 +13,4 @@ at: receiver_at.c sender_at.c
 clean:
 	@-rm receiver sender
 	@-rm handshake sync
+	@-rm out_text
