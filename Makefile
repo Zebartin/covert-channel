@@ -1,7 +1,15 @@
-run : receiver.c sender.c
-	gcc receiver.c -o receiver
-	gcc sender.c -o sender
+pid : receiver_pid.c sender_pid.c
+	gcc receiver_pid.c -o receiver
+	gcc sender_pid.c -o sender
+
+msg : receiver_msg.c sender_msg.c
+	gcc receiver_msg.c -o receiver
+	gcc sender_msg.c -o sender
+
+at: receiver_at.c sender_at.c
+	gcc receiver_at.c -o receiver
+	gcc sender_at.c -o sender
 
 clean:
-	rm receiver sender
-	rm A B C
+	@-rm receiver sender
+	@-rm A B C
