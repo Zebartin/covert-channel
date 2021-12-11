@@ -22,7 +22,6 @@ int main()
     // 初始化通信环境,与 sender 第一次握手
     int fd_A = open(FILE_A_PATH, O_CREAT, 0777);
     int fd_B = open(FILE_B_PATH, O_CREAT, 0777);
-    int fd_C = open(FILE_C_PATH, O_CREAT, 0777);
 
     while (1) {
         //  同时监控 文件AB有无被修改
@@ -64,7 +63,7 @@ int main()
             printf("Receiving the %c\n", ch);
 
             first_pid = last_pid;
-            my_touch(FILE_C_PATH);
+            my_touch(FILE_B_PATH);
         }
     }
 
@@ -73,6 +72,5 @@ int main()
     sleep(1);
     remove(FILE_A_PATH);
     remove(FILE_B_PATH);
-    remove(FILE_C_PATH);
     return 0;
 }
