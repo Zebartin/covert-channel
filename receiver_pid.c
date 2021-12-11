@@ -19,8 +19,10 @@ int main()
     }
 
     // 初始化通信环境,与 sender 第一次握手
+    mode_t old_mask = umask(0); // 取消umask
     int fd_A = open(FILE_HANDSHAKE_PATH, O_CREAT, 0777);
     int fd_B = open(FILE_SYNC_PATH, O_CREAT, 0777);
+    umask(old_mask);            // 恢复umask
     int fd_out = open(FILE_OUTPUT_PATH, O_WRONLY | O_CREAT, 0777);
     int first_ch = 1;
     while (1) {
@@ -58,7 +60,8 @@ int main()
                 perror("error!");
                 return -1;
             }
-            unsigned int ch = last_pid - first_pid - 1;
+            char ch = last_pid - first_pid - 1;
+            // 如果是sender先启动，这里会出错
             if (first_ch) {
                 first_ch = 0;
                 ch--;

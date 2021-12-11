@@ -10,7 +10,8 @@
 void create_processes(char ch)
 {
     pid_t s_pid[256];
-    for (int i = 0; i < ch; i++) {
+    int i;
+    for (i = 0; i < ch; i++) {
         if ((s_pid[i] = fork()) == 0) {
             sleep(1);
             exit(0);

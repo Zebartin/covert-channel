@@ -28,7 +28,9 @@ int main()
 {
     // 初始化通信环境,与 sender 第一次握手
     // 简单起见，不用handshake文件同步了，改用字符\0来表示结束
+    mode_t old_mask = umask(0); // 取消umask
     int fd_sync = open(FILE_SYNC_PATH, O_CREAT, 0777);
+    umask(old_mask);            // 恢复umask
     int fd_out = open(FILE_OUTPUT_PATH, O_WRONLY | O_CREAT, 0777);
 
     while (1)
