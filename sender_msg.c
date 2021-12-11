@@ -18,9 +18,9 @@ void sendChar(char c)
             msgctl(msgids[0], IPC_RMID, NULL);
         }
         // 告知数据已发送
-        my_touch(FILE_B_PATH);
+        access_file(FILE_SYNC_PATH);
         // 等待ack
-        loop_until_modified(FILE_B_PATH);
+        loop_until_modified(FILE_SYNC_PATH);
         if (t)
         {
             msgids[0] = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
@@ -41,7 +41,8 @@ void sendChar(char c)
 int main()
 {
     // 等待第一次握手以建立通信
-    loop_until_exists(FILE_B_PATH);
+    // 简单起见，不用handshake文件同步了，改用字符\0来表示结束
+    loop_until_exists(FILE_SYNC_PATH);
 
     printf("START SENDING\n");
 
