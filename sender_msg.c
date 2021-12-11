@@ -20,7 +20,7 @@ void sendChar(char c)
         // 告知数据已发送
         my_touch(FILE_B_PATH);
         // 等待ack
-        loop_until_modified(FILE_C_PATH);
+        loop_until_modified(FILE_B_PATH);
         if (t)
         {
             msgids[0] = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
@@ -42,7 +42,6 @@ int main()
 {
     // 等待第一次握手以建立通信
     loop_until_exists(FILE_B_PATH);
-    loop_until_exists(FILE_C_PATH);
 
     printf("START SENDING\n");
 

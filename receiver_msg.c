@@ -14,7 +14,7 @@ char receiveChar()
             c |= 1 << i;
             msgctl(msg_id, IPC_RMID, NULL);
         }
-        my_touch(FILE_C_PATH);
+        my_touch(FILE_B_PATH);
     }
     return c;
 }
@@ -22,7 +22,6 @@ int main()
 {
     // 初始化通信环境,与 sender 第一次握手
     int fd_B = open(FILE_B_PATH, O_CREAT, 0777);
-    int fd_C = open(FILE_C_PATH, O_CREAT, 0777);
     int fd_out = open(FILE_OUTPUT_PATH, O_WRONLY | O_CREAT, 0777);
 
     while (1)
@@ -35,12 +34,10 @@ int main()
     }
 
     close(fd_B);
-    close(fd_C);
     close(fd_out);
     // 销毁通信环境
     // 显式地等待 1s,以防止文件过快删除,sender 读不到最新的 st_atime
     sleep(1);
     remove(FILE_B_PATH);
-    remove(FILE_C_PATH);
     return 0;
 }
