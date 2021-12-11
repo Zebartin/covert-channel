@@ -7,6 +7,7 @@ char receiveChar()
     int i, msg_id;
     for (i = 0; i < 8; i++)
     {
+        loop_until_modified(FILE_B_PATH);
         msg_id = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
         if (msg_id != -1)
         {
@@ -14,8 +15,6 @@ char receiveChar()
             msgctl(msg_id, IPC_RMID, NULL);
         }
         my_touch(FILE_C_PATH);
-        if (i != 7)
-            loop_until_modified(FILE_B_PATH);
     }
     return c;
 }
@@ -28,7 +27,6 @@ int main()
 
     while (1)
     {
-        loop_until_modified(FILE_B_PATH);
         char ch = receiveChar();
         if (ch == 0)
             break;
