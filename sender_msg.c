@@ -6,9 +6,10 @@ int mq_num = 0;
 int msgids[N];
 const char *buf = "abc";
 
-void sendChar(char c)
+void send_char(char c)
 {
     int i, j, t;
+    // 逐比特传输字节
     for (i = 0; i < 8; i++)
     {
         t = c & 1;
@@ -43,21 +44,19 @@ int main()
     // 等待第一次握手以建立通信
     // 简单起见，不用handshake文件同步了，改用字符\0来表示结束
     loop_until_exists(FILE_SYNC_PATH);
-
-    printf("START SENDING\n");
-
     char ch;
     int idx = 0, tmp;
     int i;
-
+    // 挤满系统可用的消息队列
     while (1)
     {
         tmp = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
         if (tmp == -1)
         {
-            printf("Have reached message queue limit [%d]\n", mq_num);
+            printf("Have reached message queue limit [%d]:\n", mq_num);
             break;
         }
+        // N不够大，不能填满
         if (mq_num == N)
         {
             printf("Can not reach message queue limit, try increasing N.\n");
@@ -68,22 +67,22 @@ int main()
         }
         msgids[mq_num++] = tmp;
     }
-
     for (i = 0; i < mq_num; i++)
         printf("%d,", msgids[i]);
     printf("\n");
 
+    printf("START SENDING\n");
     int fd = open(FILE_INPUT_PATH, O_RDONLY);
     while (read(fd, &ch, 1))
     {
-        printf("SENDING %c\n", ch);
-        sendChar(ch);
+        printf("Sending [%c]\n", ch);
+        send_char(ch);
     }
-    sendChar(0);
+    // 发送\0表示结束
+    send_char(0);
+    // 释放占用的消息队列
     for (i = 0; i < mq_num; i++)
         msgctl(msgids[i], IPC_RMID, NULL);
-
     printf("FINISH SENDING\n");
-
     return 0;
 }

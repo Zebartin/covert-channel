@@ -1,13 +1,15 @@
 #include "config.h"
 #include <sys/msg.h>
 
-char receiveChar()
+char receive_char()
 {
     char c = 0;
     int i, msg_id;
+    // 逐比特接收字节
     for (i = 0; i < 8; i++)
     {
         loop_until_modified(FILE_SYNC_PATH);
+        // 检查消息队列是否有空槽
         msg_id = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
         if (msg_id != -1)
         {
@@ -27,11 +29,11 @@ int main()
 
     while (1)
     {
-        char ch = receiveChar();
+        char ch = receive_char();
         if (ch == 0)
             break;
         write(fd_out, &ch, sizeof(ch));
-        printf("Receiving the %c\n", ch);
+        printf("Received [%c]\n", ch);
     }
 
     close(fd_sync);
