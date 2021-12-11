@@ -15,9 +15,13 @@ char receive_char()
         {
             c |= 1 << i;
             msgctl(msg_id, IPC_RMID, NULL);
+            printf("1");
         }
+        else
+            printf("0");
         access_file(FILE_SYNC_PATH);
     }
+    printf("\n");
     return c;
 }
 int main()

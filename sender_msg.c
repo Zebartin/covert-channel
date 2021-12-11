@@ -12,6 +12,7 @@ void send_char(char c)
     for (i = 0; i < 8; i++)
     {
         t = c & 1;
+        printf("%d", t);
         if (t)
             msgctl(msgids[0], IPC_RMID, NULL);
         // 告知数据已发送
@@ -34,6 +35,7 @@ void send_char(char c)
         }
         c >>= 1;
     }
+    printf("\n");
 }
 
 int main()
