@@ -4,7 +4,6 @@
 #define N 256
 int mq_num = 0;
 int msgids[N];
-const char *buf = "abc";
 
 void send_char(char c)
 {
@@ -14,10 +13,7 @@ void send_char(char c)
     {
         t = c & 1;
         if (t)
-        {
-            printf("%d\n", c & 1);
             msgctl(msgids[0], IPC_RMID, NULL);
-        }
         // 告知数据已发送
         access_file(FILE_SYNC_PATH);
         // 等待ack
@@ -25,6 +21,7 @@ void send_char(char c)
         if (t)
         {
             msgids[0] = msgget(IPC_PRIVATE, IPC_CREAT | 0666);
+            // 消息队列空槽已被其他进程占用，挑选一个可用id放在0号位置
             if (msgids[0] == -1)
             {
                 for (j = 1; j < mq_num; j++)
