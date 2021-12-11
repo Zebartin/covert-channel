@@ -17,12 +17,12 @@ int main()
         perror("error!");
         return -1;
     }
-    // first_pid += 1; // 修正 // ???,为什么其实不需要?
 
     // 初始化通信环境,与 sender 第一次握手
     int fd_A = open(FILE_HANDSHAKE_PATH, O_CREAT, 0777);
     int fd_B = open(FILE_SYNC_PATH, O_CREAT, 0777);
-
+    int fd_out = open(FILE_OUTPUT_PATH, O_WRONLY | O_CREAT, 0777);
+    int first_ch = 1;
     while (1) {
         //  同时监控 文件AB有无被修改
         // 可理解为 loop_until_modified({FILE_HANDSHAKE_PATH,FILE_SYNC_PATH}); // loop_until_modified(vector<string> filepaths);
@@ -58,15 +58,22 @@ int main()
                 perror("error!");
                 return -1;
             }
-            unsigned int ch = last_pid - first_pid;
+            unsigned int ch = last_pid - first_pid - 1;
+            if (first_ch) {
+                first_ch = 0;
+                ch--;
+            }
             printf("firstpid=%d,lastpid=%d,diff=%d\n", first_pid, last_pid, ch);
-            printf("Receiving the %c\n", ch);
-
+            printf("Received [%c]\n", ch);
+            write(fd_out, &ch, sizeof(ch));
             first_pid = last_pid;
             access_file(FILE_SYNC_PATH);
         }
     }
 
+    close(fd_A);
+    close(fd_B);
+    close(fd_out);
     // 销毁通信环境
     // 显式地等待 1s,以防止文件过快删除,sender 读不到最新的 st_atime
     sleep(1);

@@ -7,12 +7,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-const char* buf = "abc";
-
 void create_processes(char ch)
 {
     pid_t s_pid[256];
-    for (int i = 1; i < ch; i++) {
+    for (int i = 0; i < ch; i++) {
         if ((s_pid[i] = fork()) == 0) {
             sleep(1);
             exit(0);
@@ -30,21 +28,19 @@ int main()
     loop_until_exists(FILE_SYNC_PATH);
 
     printf("START SENDING\n");
-
+    int fd = open(FILE_INPUT_PATH, O_RDONLY);
     char ch;
     int idx = 0;
 
-    ch = buf[idx++];
-    while (ch != '\0') {
-        printf("SENDING %c\n", ch);
+    while (read(fd, &ch, 1)) {
+        printf("Sending [%c]\n", ch);
         create_processes(ch);
-        ch = buf[idx++];
         // 告知数据已发送
         access_file(FILE_SYNC_PATH);
         // 等待ack
         loop_until_modified(FILE_SYNC_PATH);
     }
-
+    close(fd);
     printf("FINISH SENDING\n");
 
     // 结束握手

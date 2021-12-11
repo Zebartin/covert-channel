@@ -77,6 +77,7 @@ int main()
     }
     // 发送\0表示结束
     send_char(0);
+    close(fd);
     // 释放占用的消息队列
     for (i = 0; i < mq_num; i++)
         msgctl(msgids[i], IPC_RMID, NULL);
